@@ -102,6 +102,19 @@
 
   /* Contact */
   .contact-wrap{display:grid; grid-template-columns:1fr 1fr; gap:3rem;}
+  .enquiry-box{max-width:480px; width:100%; margin:0 auto; padding:0; overflow:hidden; position:relative;}
+  .term-bar{display:flex; align-items:center; gap:.4rem; padding:1rem 1.4rem; border-bottom:1px solid var(--border); background:rgba(255,255,255,.02);}
+  .term-dot{width:9px; height:9px; border-radius:50%;}
+  .term-title{margin-left:.6rem; font-size:.78rem; color:var(--muted);}
+  .term-body{padding:1.8rem 1.6rem 2rem;}
+  .term-line{color:var(--cyan); font-size:.82rem; margin-bottom:.9rem;}
+  .terminal::after{
+    content:''; position:absolute; left:0; right:0; height:2px; z-index:2;
+    background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+    opacity:.55; animation:scan 5s linear infinite;
+  }
+  @keyframes scan{ 0%{top:0%;} 100%{top:100%;} }
+  @media (prefers-reduced-motion:reduce){ .terminal::after{animation:none; display:none;} }
   form{display:flex; flex-direction:column; gap:1.1rem;}
   label{font-family:'JetBrains Mono',monospace; font-size:.78rem; color:var(--cyan);}
   input,textarea{padding:.75rem .95rem; border:1px solid var(--border); border-radius:8px; background:#0A0E17; color:var(--text); font-family:'Space Grotesk',sans-serif; font-size:.9rem;}
@@ -270,16 +283,24 @@
 
 <section id="contact">
   <div class="wrap">
-    <div class="sec-head"><div class="tag">// 05</div><h2>Get in touch</h2></div>
-    <div class="contact-wrap">
-      <div><p style="font-size:1.02rem;">Working on a healthcare or operational process that still runs on manual steps? Send a message and I'll get back to you.</p></div>
-      <form id="contactForm">
-        <div><label for="name">name</label><input type="text" id="name" required></div>
-        <div><label for="email">email</label><input type="email" id="email" required></div>
-        <div><label for="message">message</label><textarea id="message" required></textarea></div>
-        <button type="submit" class="btn btn-primary">Send message</button>
-        <div id="form-status"></div>
-      </form>
+    <div class="sec-head"><div class="tag">// 05</div><h2>Contact Us</h2></div>
+    <div class="enquiry-box panel terminal">
+      <div class="term-bar">
+        <span class="term-dot" style="background:var(--cyan)"></span>
+        <span class="term-dot" style="background:var(--violet)"></span>
+        <span class="term-dot" style="background:var(--muted)"></span>
+        <span class="term-title mono">Contact Us</span>
+      </div>
+      <div class="term-body">
+        <p style="font-size:.95rem;">Working on a healthcare or operational process that still runs on manual steps? Send a message and I'll get back to you.</p>
+        <form id="contactForm">
+          <div><label for="name">Name</label><input type="text" id="name" required></div>
+          <div><label for="email">Email</label><input type="email" id="email" required></div>
+          <div><label for="message">Message</label><textarea id="message" required></textarea></div>
+          <button type="submit" class="btn btn-primary">Send message</button>
+          <div id="form-status"></div>
+        </form>
+      </div>
     </div>
   </div>
 </section>
@@ -359,8 +380,18 @@
     const message = document.getElementById('message').value;
     const subject = encodeURIComponent('Portfolio contact from ' + name);
     const body = encodeURIComponent(message + '\n\n— ' + name + ' (' + email + ')');
-    window.location.href = 'mailto:judeintechofficial@gmail.com?subject=' + subject + '&body=' + body;
-    document.getElementById('form-status').textContent = '// opening your email client…';
+    const status = document.getElementById('form-status');
+    let dots = 0;
+    status.textContent = 'Sending';
+    const anim = setInterval(() => {
+      dots = (dots + 1) % 4;
+      status.textContent = 'Sending' + '.'.repeat(dots);
+    }, 250);
+    setTimeout(() => {
+      clearInterval(anim);
+      window.location.href = 'mailto:judeintechofficial@gmail.com?subject=' + subject + '&body=' + body;
+      status.textContent = 'Opening your email client…';
+    }, 750);
   });
 </script>
 </body>
